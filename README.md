@@ -44,6 +44,7 @@ Crea formularios en `forms.py` para gestionar los datos de los modelos. Incluye 
 
 2. En el formulario de creación de un **Estudiante**, valida que:
    - El correo electrónico sea único.
+   - La fecha de nacimiento no debe ser posterior al día actual.
    - El estudiante tenga al menos 18 años (basado en la fecha de nacimiento).
 
 3. En el formulario de **Inscripción**, valida que:
