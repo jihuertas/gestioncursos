@@ -1,8 +1,33 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import *
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 
 # Create your views here.
+
+class ListarCursos(ListView):
+    model=Curso
+    template_name='cursosapp/cursos/lista_cursos.html'
+    context_object_name='cursos'
+class CrearCurso(CreateView):
+    model=Curso
+    template_name='cursosapp/cursos/crear_curso.html'
+    form_class=CursoForm
+    success_url=reverse_lazy('lista_cursos')
+class ActualizarCurso(UpdateView):
+    model=Curso
+    template_name='cursosapp/cursos/actualizar_curso.html'
+    form_class=CursoForm
+    pk_url_kwarg='curso_id'
+    success_url=reverse_lazy('lista_cursos')
+class BorrarCurso(DeleteView):
+    model=Curso
+    template_name='cursosapp/cursos/borrar_curso.html'
+    pk_url_kwarg='curso_id'
+    success_url=reverse_lazy('lista_cursos')
+
+
 # Vista para listar cursos
 def lista_cursos(request):
     cursos = Curso.objects.all()
