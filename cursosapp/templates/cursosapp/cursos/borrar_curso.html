@@ -1,0 +1,13 @@
+{% extends "cursosapp/base.html" %}
+
+{% block title %}Borrar Curso{% endblock %}
+
+{% block content %}
+<h2>¿Estás seguro de que quieres borrar este curso?</h2>
+<p>{{ curso.nombre }} ({{ curso.codigo }})</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary btn-danger">Confirmar</button>
+    <a href="{% url 'lista_cursos' %}" class="btn btn-primary">Cancelar</a>
+</form>
+{% endblock %}

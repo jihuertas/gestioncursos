@@ -1,0 +1,31 @@
+{% extends "cursosapp/base.html" %}
+
+{% block title %}Lista de Estudiantes{% endblock %}
+
+{% block content %}
+<h2>Lista de Estudiantes</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Fecha Nacimiento</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for estudiante in estudiantes %}
+        <tr>
+            <td>{{ estudiante.nombre }}</td>
+            <td>{{ estudiante.email }}</td>
+            <td>{{ estudiante.fecha_nacimiento }}</td>
+            <td>
+                <a href="{% url 'actualizar_estudiante' estudiante.id %}">Editar</a> |
+                <a href="{% url 'borrar_estudiante' estudiante.id %}">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'crear_estudiante' %}">Crear nuevo estudiante</a>
+{% endblock %}

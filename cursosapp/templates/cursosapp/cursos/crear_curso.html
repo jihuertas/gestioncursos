@@ -1,0 +1,13 @@
+{% extends "cursosapp/base.html" %}
+
+{% block title %}Crear Curso{% endblock %}
+
+{% block content %}
+<h2>Crear Curso</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary btn-warning">Guardar</button>
+</form>
+<a href="{% url 'lista_cursos' %}" class="btn btn-primary">Volver a la lista de cursos</a>
+{% endblock %}

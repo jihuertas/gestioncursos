@@ -1,0 +1,13 @@
+{% extends "cursosapp/base.html" %}
+
+{% block title %}Borrar Inscripción{% endblock %}
+
+{% block content %}
+<h2>¿Estás seguro de que quieres borrar esta inscripción?</h2>
+<p>{{ inscripcion.estudiante.nombre }} inscrito en {{ inscripcion.curso.nombre }}</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar</button>
+    <a href="{% url 'lista_inscripciones' %}">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "cursosapp/base.html" %}
+
+{% block content %}
+<h2>Lista de Cursos</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for curso in cursos %}
+        <tr>
+            <td>{{ curso.nombre }}</td>
+            <td>{{ curso.codigo }}</td>
+            <td>{{ curso.fecha_inicio|date:"d/m/Y" }}</td>
+            <td>{{ curso.fecha_fin|date:"d/m/Y" }}</td>
+            <td>
+                <a href="{% url 'actualizar_curso' curso.id %}" class="btn btn-warning btn-sm">Editar</a> |
+                <a href="{% url 'borrar_curso' curso.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'crear_curso' %}" class="btn btn-primary">Crear nuevo curso</a>
+{% endblock %}
+
+
+
+
