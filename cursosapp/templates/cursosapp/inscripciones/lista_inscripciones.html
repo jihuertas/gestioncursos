@@ -3,8 +3,42 @@
 {% block title %}Lista de Inscripciones{% endblock %}
 
 {% block content %}
+
+
+<h2> Filtros:</h2>
+<form action="" method="GET" class="row g-3 align-items-center mb-3">
+    <div class="col-auto">
+        <label for="curso" class="form-label">Filtrar por Curso</label>
+        <select name="curso" id="curso" class="form-select">
+            <option value="">Todos los Cursos</option>
+            {% for curso in cursos %}
+            <option value="{{ curso.id }}" {% if request.GET.curso == curso.id|stringformat:"s" %}selected{% endif %}>
+                {{ curso.nombre }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="estudiante" class="form-label">Filtrar por Estudiante</label>
+        <select name="estudiante" id="estudiante" class="form-select">
+            <option value="">Todos los Estudiantes</option>
+            {% for estudiante in estudiantes %}
+            <option value="{{ estudiante.id }}" {% if request.GET.estudiante == estudiante.id|stringformat:"s" %}selected{% endif %}>
+                {{ estudiante.nombre }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="ncurso" class="form-label">Buscar por Nombre de curso</label>
+        <input type="text" name="ncurso" id="ncurso" class="form-control" placeholder="Buscar..." value="{{ request.GET.ncurso }}">
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary mx-2">Filtrar</button>
+    </div>
+</form>
 <h2>Lista de Inscripciones</h2>
-<table>
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Estudiante</th>
@@ -20,12 +54,12 @@
             <td>{{ inscripcion.curso.nombre }}</td>
             <td>{{ inscripcion.fecha_inscripcion }}</td>
             <td>
-                <a href="{% url 'actualizar_inscripcion' inscripcion.id %}">Editar</a> |
-                <a href="{% url 'borrar_inscripcion' inscripcion.id %}">Eliminar</a>
+                <a href="{% url 'actualizar_inscripcion' inscripcion.id %}" class="btn btn-warning btn-sm">Editar</a> |
+                <a href="{% url 'borrar_inscripcion' inscripcion.id %}" class="btn btn-danger btn-sm">Eliminar</a>
             </td>
-        </tr>
+    
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'crear_inscripcion' %}">Crear nueva inscripción</a>
+<a href="{% url 'crear_inscripcion' %}" class="btn btn-primary">Crear nueva inscripción</a>
 {% endblock %}
