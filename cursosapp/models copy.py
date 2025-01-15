@@ -19,17 +19,13 @@ class Curso(models.Model):
         if self.fecha_inicio >= self.fecha_fin:
             raise ValidationError("La fecha de inicio debe ser anterior a la fecha de finalización.")
 
-class Estudiante(AbstractUser):
-    #nombre = models.CharField(max_length=100)
-    #email = models.EmailField(unique=True)
-    foto = models.ImageField(upload_to='users/')
-    fecha_nacimiento = models.DateField(null=True, blank=True)
-    
-    class Meta:
-        verbose_name = "Estudiante"         # Nombre en singular
-        verbose_name_plural = "Estudiantes" # Nombre en plural
+class Estudiante(models.Model):
+    nombre = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    fecha_nacimiento = models.DateField()
+
     def __str__(self):
-        return f"{self.last_name}, {self.first_name}"
+        return self.nombre
 
     def clean(self):
         if self.fecha_nacimiento > date.today():
@@ -45,7 +41,7 @@ class Inscripcion(models.Model):
     fecha_inscripcion = models.DateField()
 
     def __str__(self):
-        return f"{self.estudiante.first_name} inscrito en {self.curso.nombre}"
+        return f"{self.estudiante.nombre} inscrito en {self.curso.nombre}"
 
     def clean(self):
         if self.fecha_inscripcion > date.today():

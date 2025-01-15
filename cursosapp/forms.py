@@ -21,7 +21,7 @@ class CursoForm(forms.ModelForm):
 class EstudianteForm(forms.ModelForm):
     class Meta:
         model = Estudiante
-        fields = ['nombre', 'email', 'fecha_nacimiento']
+        fields = ['first_name', 'email', 'fecha_nacimiento']
         widgets = {
             'fecha_nacimiento': forms.DateInput(format='%Y-%m-%d',attrs={'type': 'date'})
         }

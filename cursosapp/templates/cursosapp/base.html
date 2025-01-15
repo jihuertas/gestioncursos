@@ -15,6 +15,20 @@
                 <div class="position-sticky">
                     <ul class="nav flex-column">
                         <li class="nav-item">
+                            {% if user.is_authenticated %}
+                             <p>¡Bienvenido, {{ user.username}}!</p>
+                             <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %} 
+                                <button type="submit" class="">Cerrar Sesión</button>
+                              </form>
+                            {% else %}
+                            <p><a href="{% url 'login' %}">Iniciar Sesión</a></p>
+                            {% endif %}
+                        
+                        
+
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link active" href="{% url 'lista_cursos' %}">Cursos</a>
                         </li>
                         <li class="nav-item">

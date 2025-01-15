@@ -18,7 +18,7 @@ urlpatterns = [
     # path('inscripciones/<int:inscripcion_id>/editar/', actualizar_inscripcion, name='actualizar_inscripcion'),
     # path('inscripciones/<int:inscripcion_id>/borrar/', borrar_inscripcion, name='borrar_inscripcion'),
 
-    path('cursos/', ListarCursos.as_view(), name='lista_cursos'),
+    path('', ListarCursos.as_view(), name='lista_cursos'),
     path('cursos/crear/', CrearCurso.as_view(), name='crear_curso'),
     path('cursos/<int:curso_id>/editar/', ActualizarCurso.as_view(), name='actualizar_curso'),
     path('cursos/<int:curso_id>/borrar/', BorrarCurso.as_view(), name='borrar_curso'),

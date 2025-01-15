@@ -3,13 +3,15 @@ from .forms import *
 from .models import *
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 ## CURSOS
-class ListarCursos(ListView):
+
+class ListarCursos(LoginRequiredMixin, ListView):
     model=Curso
     template_name='cursosapp/cursos/lista_cursos.html'
     context_object_name='cursos'
-class CrearCurso(CreateView):
+class CrearCurso(LoginRequiredMixin, CreateView):
     model=Curso
     template_name='cursosapp/cursos/crear_curso.html'
     form_class=CursoForm
@@ -113,6 +115,7 @@ class BorrarInscripcion(DeleteView):
     template_name='cursosapp/cursos/borrar_inscripcion.html'
     pk_url_kwarg='inscripcion_id'
     success_url=reverse_lazy('lista_inscripciones')
+
 
 
 # Vista para listar cursos
