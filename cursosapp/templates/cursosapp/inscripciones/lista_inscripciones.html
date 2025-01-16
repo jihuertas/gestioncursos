@@ -18,17 +18,19 @@
             {% endfor %}
         </select>
     </div>
+    {% if user.is_superuser %}
     <div class="col-auto">
         <label for="estudiante" class="form-label">Filtrar por Estudiante</label>
         <select name="estudiante" id="estudiante" class="form-select">
             <option value="">Todos los Estudiantes</option>
             {% for estudiante in estudiantes %}
             <option value="{{ estudiante.id }}" {% if request.GET.estudiante == estudiante.id|stringformat:"s" %}selected{% endif %}>
-                {{ estudiante.nombre }}
+                {{ estudiante.username }}
             </option>
             {% endfor %}
         </select>
     </div>
+    {% endif %}
     <div class="col-auto">
         <label for="ncurso" class="form-label">Buscar por Nombre de curso</label>
         <input type="text" name="ncurso" id="ncurso" class="form-control" placeholder="Buscar..." value="{{ request.GET.ncurso }}">
@@ -50,7 +52,7 @@
     <tbody>
         {% for inscripcion in inscripciones %}
         <tr>
-            <td>{{ inscripcion.estudiante.nombre }}</td>
+            <td>{{ inscripcion.estudiante.username }}</td>
             <td>{{ inscripcion.curso.nombre }}</td>
             <td>{{ inscripcion.fecha_inscripcion }}</td>
             <td>

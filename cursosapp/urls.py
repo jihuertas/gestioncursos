@@ -33,5 +33,7 @@ urlpatterns = [
     path('inscripciones/<int:inscripcion_id>/editar/', ActualizarInscripcion.as_view(), name='actualizar_inscripcion'),
     path('inscripciones/<int:inscripcion_id>/borrar/', BorrarInscripcion.as_view(), name='borrar_inscripcion'),
 
+    path('registro/', RegistroView.as_view(), name='registro'),
+
 ]
 

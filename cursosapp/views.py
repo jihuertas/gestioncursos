@@ -4,6 +4,7 @@ from .models import *
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 
 ## CURSOS
 
@@ -30,7 +31,7 @@ class BorrarCurso(DeleteView):
 
 
 ## ESTUDIANTES
-class ListarEstudiantes(ListView):
+class ListarEstudiantes(LoginRequiredMixin,ListView):
     model=Estudiante
     template_name='cursosapp/estudiantes/lista_estudiantes.html'
     context_object_name='estudiantes'
@@ -52,10 +53,11 @@ class BorrarEstudiante(DeleteView):
     success_url=reverse_lazy('lista_estudiantes')
 
 ## INSCRIPCIONES
-class ListarInscripciones(ListView):
+class ListarInscripciones(LoginRequiredMixin, ListView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/lista_inscripciones.html'
     context_object_name='inscripciones'
+    
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -63,9 +65,10 @@ class ListarInscripciones(ListView):
         estudiante = self.request.GET.get('estudiante')
         curso = self.request.GET.get('curso')
         
+        queryset = queryset.filter(estudiante__id=self.request.user.id)
+
         if name_search:
             queryset = queryset.filter(estudiante__nombre__icontains=name_search)
-    
         if estudiante:
             queryset = queryset.filter(estudiante__id=estudiante)
         if curso:
@@ -78,32 +81,19 @@ class ListarInscripciones(ListView):
         contexto['estudiantes'] = Estudiante.objects.all()
         return contexto
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset().select_related('estudiante', 'curso')        
-    #     ncurso = self.request.GET.get('ncurso')
-    #     curso_id = self.request.GET.get('curso')
-    #     estudiante_id = self.request.GET.get('estudiante')
-
-    #     if ncurso:
-    #         queryset = queryset.filter(estudiante__nombre__icontains=ncurso)
-    #     if curso_id:
-    #         queryset = queryset.filter(curso_id=curso_id)
-    #     if estudiante_id:
-    #         queryset = queryset.filter(estudiante_id=estudiante_id)
-
-    #     return queryset
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['cursos'] = Curso.objects.all()
-    #     context['estudiantes'] = Estudiante.objects.all()
-    #     return context
     
 class CrearInscripcion(CreateView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/crear_inscripcion.html'
     form_class=InscripcionForm
     success_url=reverse_lazy('lista_inscripciones')
+
+    def form_valid(self, form):
+
+        form.instance.estudiante = self.request.user
+        return super().form_valid(form)
+    
+
 class ActualizarInscripcion(UpdateView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/actualizar_inscripcion.html'
@@ -116,7 +106,12 @@ class BorrarInscripcion(DeleteView):
     pk_url_kwarg='inscripcion_id'
     success_url=reverse_lazy('lista_inscripciones')
 
+## REGISTRO
 
+class RegistroView(CreateView):
+    form_class = EstudianteCreationForm
+    template_name = 'registration/registro.html'
+    success_url = reverse_lazy('login')
 
 # Vista para listar cursos
 def lista_cursos(request):
