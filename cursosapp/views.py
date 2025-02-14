@@ -42,7 +42,7 @@ class BorrarCurso(DeleteView):
 
 
 ## ESTUDIANTES
-class ListarEstudiantes(ListView):
+class ListarEstudiantes(LoginRequiredMixin,ListView):
     model=Estudiante
     template_name='cursosapp/estudiantes/lista_estudiantes.html'
     context_object_name='estudiantes'
@@ -66,10 +66,11 @@ class BorrarEstudiante(DeleteView):
     success_url=reverse_lazy('lista_estudiantes')
 
 ## INSCRIPCIONES
-class ListarInscripciones(ListView):
+class ListarInscripciones(LoginRequiredMixin, ListView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/lista_inscripciones.html'
     context_object_name='inscripciones'
+    
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -92,6 +93,7 @@ class ListarInscripciones(ListView):
         contexto['cursos'] = Curso.objects.all()
         contexto['estudiantes'] = Estudiante.objects.all()
         return contexto
+
     
 class CrearInscripcion(CreateView):
     model=Inscripcion
@@ -100,10 +102,11 @@ class CrearInscripcion(CreateView):
     success_url=reverse_lazy('lista_inscripciones')
 
     def form_valid(self, form):
-        # Asigna el usuario autenticado al objeto antes de guardarlo
+
         form.instance.estudiante = self.request.user
         return super().form_valid(form)
     
+
 class ActualizarInscripcion(UpdateView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/actualizar_inscripcion.html'

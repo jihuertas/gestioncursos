@@ -32,11 +32,12 @@ class Estudiante(AbstractUser):
         return f"{self.last_name}, {self.first_name}"
 
     def clean(self):
-        if self.fecha_nacimiento > date.today():
-            raise ValidationError("La fecha de nacimiento no puede ser futura.")
-        edad = (date.today() - self.fecha_nacimiento).days // 365
-        if edad < 18:
-            raise ValidationError("El estudiante debe tener al menos 18 años.")
+        if self.fecha_nacimiento: 
+            if self.fecha_nacimiento > date.today():
+                raise ValidationError("La fecha de nacimiento no puede ser futura.")
+            edad = (date.today() - self.fecha_nacimiento).days // 365
+            if edad < 18:
+                raise ValidationError("El estudiante debe tener al menos 18 años.")
 
 
 class Inscripcion(models.Model):
