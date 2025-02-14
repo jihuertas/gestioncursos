@@ -15,5 +15,6 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(Curso)
+#admin.site.register(Estudiante)
 admin.site.register(Estudiante,CustomUserAdmin)
 admin.site.register(Inscripcion)

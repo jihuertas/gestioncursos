@@ -1,9 +1,12 @@
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import *
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 
 ## CURSOS
 
@@ -16,6 +19,15 @@ class CrearCurso(LoginRequiredMixin, CreateView):
     template_name='cursosapp/cursos/crear_curso.html'
     form_class=CursoForm
     success_url=reverse_lazy('lista_cursos')
+
+    def get_form_kwargs(self):
+        # Sobrescribe este método para pasar request al formulario
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        messages.success(self.request, "Se ha creado el curso correctamente")
+        return super().form_valid(form)
 class ActualizarCurso(UpdateView):
     model=Curso
     template_name='cursosapp/cursos/actualizar_curso.html'
@@ -39,6 +51,8 @@ class CrearEstudiante(CreateView):
     template_name='cursosapp/estudiantes/crear_estudiante.html'
     form_class=EstudianteForm
     success_url=reverse_lazy('lista_estudiantes')
+
+    
 class ActualizarEstudiante(UpdateView):
     model=Estudiante
     template_name='cursosapp/estudiantes/actualizar_estudiante.html'
@@ -63,9 +77,10 @@ class ListarInscripciones(ListView):
         estudiante = self.request.GET.get('estudiante')
         curso = self.request.GET.get('curso')
         
+        if self.request.user and not self.request.user.is_superuser:
+            queryset = queryset.filter(estudiante__id=self.request.user.id)
         if name_search:
             queryset = queryset.filter(estudiante__nombre__icontains=name_search)
-    
         if estudiante:
             queryset = queryset.filter(estudiante__id=estudiante)
         if curso:
@@ -77,33 +92,18 @@ class ListarInscripciones(ListView):
         contexto['cursos'] = Curso.objects.all()
         contexto['estudiantes'] = Estudiante.objects.all()
         return contexto
-
-    # def get_queryset(self):
-    #     queryset = super().get_queryset().select_related('estudiante', 'curso')        
-    #     ncurso = self.request.GET.get('ncurso')
-    #     curso_id = self.request.GET.get('curso')
-    #     estudiante_id = self.request.GET.get('estudiante')
-
-    #     if ncurso:
-    #         queryset = queryset.filter(estudiante__nombre__icontains=ncurso)
-    #     if curso_id:
-    #         queryset = queryset.filter(curso_id=curso_id)
-    #     if estudiante_id:
-    #         queryset = queryset.filter(estudiante_id=estudiante_id)
-
-    #     return queryset
-    
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['cursos'] = Curso.objects.all()
-    #     context['estudiantes'] = Estudiante.objects.all()
-    #     return context
     
 class CrearInscripcion(CreateView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/crear_inscripcion.html'
     form_class=InscripcionForm
     success_url=reverse_lazy('lista_inscripciones')
+
+    def form_valid(self, form):
+        # Asigna el usuario autenticado al objeto antes de guardarlo
+        form.instance.estudiante = self.request.user
+        return super().form_valid(form)
+    
 class ActualizarInscripcion(UpdateView):
     model=Inscripcion
     template_name='cursosapp/inscripciones/actualizar_inscripcion.html'
@@ -116,7 +116,11 @@ class BorrarInscripcion(DeleteView):
     pk_url_kwarg='inscripcion_id'
     success_url=reverse_lazy('lista_inscripciones')
 
-
+## REGISTRO
+class RegistroView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'registration/registro.html'
+    success_url = reverse_lazy('login')  # Redirige al login después del registro
 
 # Vista para listar cursos
 def lista_cursos(request):
@@ -226,3 +230,4 @@ def borrar_inscripcion(request, inscripcion_id):
         inscripcion.delete()
         return redirect('lista_inscripciones')
     return render(request, 'cursosapp/inscripciones/borrar_inscripcion.html', {'inscripcion': inscripcion})
+

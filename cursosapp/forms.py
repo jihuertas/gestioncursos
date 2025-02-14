@@ -1,6 +1,8 @@
 from django import forms
 from .models import *
 from django.core.exceptions import ValidationError
+from django.contrib import messages
+
 
 class CursoForm(forms.ModelForm):
     class Meta:
@@ -8,6 +10,9 @@ class CursoForm(forms.ModelForm):
         fields = ['nombre', 'codigo', 'fecha_inicio', 'fecha_fin']
         widgets = {'fecha_inicio':forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'}),
                     'fecha_fin':forms.DateInput(format='%Y-%m-%d',attrs={'type':'date'})}
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)  # Extraer el request
+        super().__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
@@ -15,6 +20,9 @@ class CursoForm(forms.ModelForm):
         fecha_fin = cleaned_data.get('fecha_fin')
 
         if fecha_inicio and fecha_fin and fecha_inicio >= fecha_fin:
+            if self.request:
+                messages.error(self.request, "Introduzca una fecha de inicio anterior a la de fin")
+            
             raise ValidationError("La fecha de inicio debe ser anterior a la fecha de finalización.")
 
 
